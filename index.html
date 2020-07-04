@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>MNIST Handwritten Digit recognition using CNN</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}" />
+
+</head>
+
+<body>
+  <div class="container">
+    <div>
+      
+      <span class="badge badge-info">MNIST</span>
+      <h1 class="centered">Draw the digit inside this Box (0-9) </h1>
+      <br>
+      <br>
+      <br>
+      <div class="canvasDiv">
+        <canvas id="canvas" width="280" height="280">
+        </canvas>
+        <br/>
+        <p style="text-align:center;">
+          <a class="btn btn-success myButton" href="#" role="button">Predict</a>
+          <a class="btn btn-primary" href="#" id="clearButton" role="button">Clear</a>
+        </p>
+      </div>
+    </div>
+
+    <br>
+    <div class="alert alert-info centered" role="alert">
+      <h5 id="result">Get your prediction here!</h5>
+    </div>
+
+    <footer class="footer">
+      <p>niyazed &#128540;</p>
+    </footer>
+  </div>
+
+  <!-- /container -->
+
+  <script src="{{url_for('static',filename='jquery.min.js')}}"></script>
+  <script src="{{url_for('static',filename='index.js')}}"></script>
+  <script type="text/javascript">
+    $(".myButton").click(function () {
+      $('#result').text('  Predicting...');
+      var $SCRIPT_ROOT = {{ request.script_root| tojson | safe
+    }};
+    var canvasObj = document.getElementById("canvas");
+    var img = canvasObj.toDataURL('image/png');
+    $.ajax({
+      type: "POST",
+      url: $SCRIPT_ROOT + "/predict/",
+      data: img,
+      success: function (data) {
+        $('#result').text('Predicted Output: ' + data);
+      }
+    });
+	   		});
+  </script>
+</body>
+
+</html>
